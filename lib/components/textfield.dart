@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
-final controller;
-final String hintText;
-final bool obsecureText;
+  final controller;
+  final String hintText;
+  final bool obsecureText;
 
   const MyTextField({
     super.key,
@@ -14,26 +14,24 @@ final bool obsecureText;
 
   @override
   Widget build(BuildContext context) {
-    return  Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: controller,
-                  obscureText: obsecureText,
-                  decoration: InputDecoration(
-                    enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white),
-                    ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide:  BorderSide(color: Colors.grey),
-                    ),
-                    fillColor: const Color.fromARGB(255, 212, 209, 209),
-                    filled: true,
-                    hintText: hintText,
-                    hintStyle: TextStyle(color: Colors.grey[500]),
-                  ),
-                ),
-              );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: TextField(
+        controller: controller,
+        obscureText: obsecureText,
+        decoration: InputDecoration(
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey),
+          ),
+          fillColor: const Color.fromARGB(255, 212, 209, 209),
+          filled: true,
+          hintText: hintText,
+          hintStyle: TextStyle(color: Colors.grey[500]),
+        ),
+      ),
+    );
   }
-
- 
-  }
+}
