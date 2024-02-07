@@ -38,6 +38,8 @@ dependencies:
   firebase_auth: ^4.17.3
   firebase_core: ^2.25.3
   google_sign_in: ^6.2.1
+  agora_rtc_engine: 
+  permission_handler: 
 
   #Google Icon
   font_awesome_flutter:  ^9.0.0
