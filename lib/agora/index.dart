@@ -17,6 +17,35 @@ class _IndexPageState extends State<IndexPage> {
   bool _validateError = false;
   ClientRole? _role = ClientRole.Broadcaster;
 
+  Future<void> onJoin() async {
+    setState(() {
+      _channelController.text.isEmpty 
+      ? _validateError = true
+      : _validateError = false;
+    });
+    if (_channelController.text.isNotEmpty) {
+      await _handleCameraAndMic(Permission.camera);
+      await _handleCameraAndMic(Permission.microphone);
+      if (context.mounted) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CallPgae(
+            channelName: _channelController.text,
+            role: _role,
+          ),
+        ),
+      );
+    }
+  }
+}
+
+    Future<void> _handleCameraAndMic(Permission permission) async {
+      final status = await permission.request();
+      log(status.toString());
+    }
+
+
   @override
   void dispose() {
     _channelController.dispose();
@@ -65,8 +94,17 @@ class _IndexPageState extends State<IndexPage> {
               });
               },
               value: ClientRole.Audience,
+              groupValue: _role,
             ),
-          ],),
+            ElevatedButton(
+              onPressed: onJoin,
+              child: Text('Join'),
+              style: ElevatedButton.styleFrom(
+              minimumSize: const Size(double.infinity,40),
+             ),
+            ),
+          ],
+          ),
         )
       ),
     );
