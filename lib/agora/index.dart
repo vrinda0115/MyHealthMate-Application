@@ -1,9 +1,9 @@
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer';
-import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:agora_rtc_engine/rtc_engine.dart';
 import './call.dart';
 class IndexPage extends StatefulWidget {
   const IndexPage({super.key});
@@ -41,7 +41,7 @@ class _IndexPageState extends State<IndexPage> {
               controller: _channelController,
               decoration: InputDecoration(
                 errorText: 
-                  _validateError ? 'Cheannel name is mandatory' : null,
+                  _validateError ? 'Channel name is mandatory' : null,
                 border: const UnderlineInputBorder(
                   borderSide: BorderSide(width: 1),
                 ),
@@ -64,6 +64,7 @@ class _IndexPageState extends State<IndexPage> {
                 _role = value;
               });
               },
+              value: ClientRole.Audience,
             ),
           ],),
         )
