@@ -61,7 +61,7 @@ class _IndexPageState extends State<IndexPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(children: <Widget>[
             const SizedBox(height: 40,),
             Image.network('http://tinyurl.com/2p889y4k'),
@@ -98,10 +98,10 @@ class _IndexPageState extends State<IndexPage> {
             ),
             ElevatedButton(
               onPressed: onJoin,
-              child: Text('Join'),
               style: ElevatedButton.styleFrom(
               minimumSize: const Size(double.infinity,40),
              ),
+              child: const Text('Join'),
             ),
           ],
           ),

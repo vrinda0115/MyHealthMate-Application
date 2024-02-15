@@ -4,6 +4,7 @@ import 'package:uipages/components/buttons.dart';
 import 'package:uipages/agora/index.dart';
 
 class HomePage extends StatelessWidget {
+   
   HomePage({super.key});
 
   final user = FirebaseAuth.instance.currentUser;
@@ -12,17 +13,11 @@ class HomePage extends StatelessWidget {
   void signUserOut() {
     FirebaseAuth.instance.signOut();
   }
-  void indexPage(){
-    //show loading circle
-    dynamic context;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
-    const IndexPage();
+
+  void indexPage() {
+    IndexPage;
   }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,12 +36,12 @@ class HomePage extends StatelessWidget {
               ),
               
               const SizedBox(
-                height: 10,
+                height: 50,
                 ),
               //Button way to go to agora index page
-              MyButton(
-                text: "Way to Agora vc",
-                onTap: indexPage,
+               MyButton(
+                  text: "Way to agora vc",
+                  onTap: indexPage ,
                 ),
                 
             ],),
