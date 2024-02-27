@@ -7,7 +7,7 @@ pluginManagement {
         return flutterSdkPath
     }
     settings.ext.flutterSdkPath = flutterSdkPath()
-    System.setProperty('org.gradle.java.home', 'C:/Program Files/Java/jdk-11.0.21')
+    System.setProperty('org.gradle.java.home', 'C:/Program Files/Java/jdk-21')
 
     includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
 

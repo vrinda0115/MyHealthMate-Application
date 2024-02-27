@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uipages/components/square_tile.dart';
@@ -9,6 +10,7 @@ class RegisterPage extends StatefulWidget {
   final Function()? onTap;
   const RegisterPage({super.key, required this.onTap});
 
+
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -17,8 +19,23 @@ class _RegisterPageState extends State<RegisterPage> {
   //text editing controllers
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-   final confirmPasswordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final ageController = TextEditingController();
+  
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose(); 
+    firstNameController.dispose();
+    lastNameController.dispose();
+    ageController.dispose();
+    super.dispose();
+  }
 
+  //Authenticate User
   //sign user Up method
   void signUserUp() async {
     //show loading circle
@@ -53,7 +70,25 @@ class _RegisterPageState extends State<RegisterPage> {
       //Show error message 
       showErrorMessage(e.code);
     }
+
+    // add user details
+    addUserDetails(
+      firstNameController.text.trim(),
+      lastNameController.text.trim(),
+      emailController.text.trim(),
+      int.parse(ageController.text.trim()),
+    );
   }
+
+  Future addUserDetails(String firstName,String lastName,String email,int age) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'first name' : firstName,
+      'last name' : lastName,
+      'email' : email,
+      'age' : age,
+    });
+  }
+
 
   //error message to user
   void showErrorMessage(String message) {
@@ -85,10 +120,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 //logo
                 const Icon(
                   Icons.lock,
-                  size: 100,
+                  size: 80,
                 ),
             
-                const SizedBox(height: 25),
+                const SizedBox(height: 5),
             
                 //Lets create an account for you
                 Text(
@@ -99,8 +134,35 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
             
-                const SizedBox(height: 25),
-            
+
+                const SizedBox(height: 10),
+                
+                //First Name textfield
+                MyTextField(
+                  controller: firstNameController,
+                  hintText: 'First Name',
+                  obsecureText: false,
+                ),
+
+                const SizedBox(height: 10),
+                
+                //Last Name textfield
+                MyTextField(
+                  controller: lastNameController,
+                  hintText: 'Last Name',
+                  obsecureText: false,
+                ),
+                const SizedBox(height: 10),
+                
+                //Age textfield
+                MyTextField(
+                  controller: ageController,
+                  hintText: 'Age',
+                  obsecureText: false,
+                ),
+
+                const SizedBox(height: 10),
+                
                 //username textfield
                 MyTextField(
                   controller: emailController,
@@ -139,7 +201,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
             
                 const SizedBox(
-                  height: 40,
+                  height: 15,
                 ),
             
                 //or continue with
@@ -171,7 +233,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
             
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
             
                 //google sign in button
@@ -191,7 +253,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
             
                 const SizedBox(
-                  height: 25,
+                  height: 10,
                 ),
             
                 //not a member? register now

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uipages/components/square_tile.dart';
 import 'package:uipages/components/textfield.dart';
 import 'package:uipages/components/buttons.dart';
+import 'package:uipages/pages/forgot_pw_page.dart';
 import 'package:uipages/provider/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,7 +17,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   //text editing controllers
   final emailController = TextEditingController();
-
   final passwordController = TextEditingController();
 
   //sign user in method
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
             
                 const SizedBox(height: 10),
-            
+
                 //password textfield
                 MyTextField(
                   controller: passwordController,
@@ -113,9 +113,16 @@ class _LoginPageState extends State<LoginPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(
-                        'Forgot Password? ',
-                        style: TextStyle(color: Colors.grey[600]),
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context){
+                            return ForgotPasswordPage();
+                          }));
+                        },
+                        child: Text(
+                          'Forgot Password? ',
+                          style: TextStyle(color: Colors.grey[600],fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),

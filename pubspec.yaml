@@ -40,6 +40,7 @@ dependencies:
   google_sign_in: ^6.2.1
   agora_rtc_engine: 
   permission_handler: 
+  cloud_firestore: ^4.15.3
 
   #Google Icon
   font_awesome_flutter:  ^9.0.0
