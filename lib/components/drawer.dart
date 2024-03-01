@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uipages/pages/home_page1.dart';
 import 'package:uipages/pages/lab_reports.dart';
 import 'package:uipages/pages/manage_medications.dart';
-import 'package:uipages/pages/profile_page.dart';
+import 'package:uipages/pages/profile_page/profile_page.dart';
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});

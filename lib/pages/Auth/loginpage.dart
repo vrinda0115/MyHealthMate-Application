@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uipages/components/square_tile.dart';
 import 'package:uipages/components/textfield.dart';
 import 'package:uipages/components/buttons.dart';
-import 'package:uipages/pages/forgot_pw_page.dart';
+import 'package:uipages/pages/Auth/forgot_pw_page.dart';
 import 'package:uipages/provider/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {
