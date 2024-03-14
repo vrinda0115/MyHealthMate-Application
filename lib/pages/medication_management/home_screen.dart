@@ -43,7 +43,9 @@ void navigateToAddScreen(BuildContext context) {
                   padding: EdgeInsets.only(top: 50),
                   child: Center(
                     child: TextField(
+            
                     decoration: InputDecoration(
+                      
                       prefixIcon: Icon(Icons.search),
                       border: InputBorder.none,
                       hintText: 'search',
