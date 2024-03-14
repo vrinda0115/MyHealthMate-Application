@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uipages/components/drawer.dart';
+import 'package:uipages/pages/medication_management/home_screen.dart';
 
 class ManageMedication extends StatelessWidget {
   const ManageMedication({super.key});
@@ -7,6 +9,10 @@ class ManageMedication extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Manage Medication"),),
+      drawer: MyDrawer(),
+      body: Container(
+        child: const HomeScreen(),
+      ),
     );
   }
 }

@@ -92,7 +92,7 @@ class MyDrawer extends StatelessWidget {
           ),
         ),
         //Lab Reports
-        const SizedBox(height: 10,),
+        const SizedBox(height: 25,),
         Padding(
           padding: const EdgeInsets.only(left: 25.0),
           child: ListTile(

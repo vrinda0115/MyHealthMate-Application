@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // ignore: unused_import
 import 'package:uipages/components/buttons.dart';
+import 'package:uipages/Doctor/auth/auth_doctor.dart';
 import 'package:uipages/pages/Auth/auth_page.dart';
 
 
@@ -26,35 +27,39 @@ class _DoctorOrUserState extends State<DoctorOrUser> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 25),
             child: SizedBox(
-              height: 100,
-              width:250,
+              height: 50,
+              width:150,
               child: ElevatedButton(
                   
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AuthPage()),
+                      MaterialPageRoute(builder: (context) => AuthPageDoc()),
                     );
                       },
                   
-                  child: Text('Doctor Login'),),
+                  child: const Text('Doctor Login'),),
             ),
           ),
           
           //user Button to login and registeration
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 25),
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to user login screen
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => AuthPage()),
-                  );
-                },
-                child: Text('User Login',style: TextStyle(fontWeight: FontWeight.bold),),
+              child: SizedBox(
+                height: 50,
+                width:150,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to user login screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AuthPage()),
+                    );
+                  },
+                  child: const Text('User Login',style: TextStyle(fontWeight: FontWeight.bold),),
+                ),
               ),
             )
           

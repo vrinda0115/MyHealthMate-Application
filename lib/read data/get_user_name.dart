@@ -5,7 +5,7 @@ class GetUserName extends StatelessWidget {
   
   final String documentId;
 
-    GetUserName({required this.documentId});
+    const GetUserName({super.key, required this.documentId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class GetUserName extends StatelessWidget {
       {
         Map<String,dynamic> data = 
         snapshot.data!.data() as Map<String,dynamic>;
-        return Text('First Name: ${data['first name']}');
+        return Text('${data['first name']} ${data['last name']}');
       }
       return const Text('Loading...');
     }), 
