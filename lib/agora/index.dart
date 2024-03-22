@@ -1,10 +1,12 @@
 
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:developer';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:uipages/components/drawer.dart';
+import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
+import 'package:agora_rtc_engine/rtc_remote_view.dart' as RtcRemoteView;
 import 'package:agora_rtc_engine/rtc_engine.dart';
-import './call.dart';
+import 'package:permission_handler/permission_handler.dart';
+const appId = "29c653efca674292a77a0ff5db170b29";
+const token = "007eJxTYNBcn5Cvqacu/N8/c5pQpGZvJ0eGwKVLa+fOPeMX1yeX+kqBwcgy2czUODUtOdHM3MTI0ijR3DzRIC3NNCXJ0NwgycjywYafqQ2BjAzrTjMyMjJAIIjPzZCWWVRckpyRmJeaw8AAAJxfIWI=";
 class IndexPage extends StatefulWidget {
   const IndexPage({super.key});
 
@@ -13,100 +15,92 @@ class IndexPage extends StatefulWidget {
 }
 
 class _IndexPageState extends State<IndexPage> {
-  final _channelController = TextEditingController();
-  bool _validateError = false;
-  ClientRole? _role = ClientRole.Broadcaster;
-
-  Future<void> onJoin() async {
-    setState(() {
-      _channelController.text.isEmpty 
-      ? _validateError = true
-      : _validateError = false;
-    });
-    if (_channelController.text.isNotEmpty) {
-      await _handleCameraAndMic(Permission.camera);
-      await _handleCameraAndMic(Permission.microphone);
-      if (context.mounted) {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CallPgae(
-            channelName: _channelController.text,
-            role: _role,
-          ),
-        ),
-      );
-    }
-  }
-}
-
-    Future<void> _handleCameraAndMic(Permission permission) async {
-      final status = await permission.request();
-      log(status.toString());
-    }
-
+  int? _remoteUid;
+  late RtcEngine _engine;
 
   @override
-  void dispose() {
-    _channelController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    initForAgora();
   }
 
+  Future<void> initForAgora() async{
+    //retrieve Permissions
+    await [Permission.microphone, Permission.camera].request();
+
+    // Create the engine
+    try {
+      _engine = await RtcEngine.createWithContext(RtcEngineContext(appId));
+
+      await _engine.enableVideo();
+
+      _engine.setEventHandler(RtcEngineEventHandler(
+        joinChannelSuccess: (String channel, int uid, int elapsed) {
+          print("Local user $uid joined");
+        },
+        userJoined: (int uid, int elapsed) {
+          print("Remote user $uid joined");
+          setState(() {
+            _remoteUid = uid;
+          });
+        },
+        userOffline: (int uid, UserOfflineReason reason) {
+          print("Remote user $uid left channel");
+          setState(() {
+            _remoteUid = null;
+          });
+        },
+      ));
+
+      // Join a channel (replace "your_channel_name" with your channel name)
+      await _engine.joinChannel(null, "firstchanel", null, 0);
+    } catch (e) {
+      print("Failed to initialize Agora engine: $e");
+      // Handle initialization error
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Agora'),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(children: <Widget>[
-            const SizedBox(height: 40,),
-            Image.network('http://tinyurl.com/2p889y4k'),
-            const SizedBox(height: 20,),
-            TextField(
-              controller: _channelController,
-              decoration: InputDecoration(
-                errorText: 
-                  _validateError ? 'Channel name is mandatory' : null,
-                border: const UnderlineInputBorder(
-                  borderSide: BorderSide(width: 1),
-                ),
-                hintText: 'Channel name',
-              ),
+        backgroundColor:Colors.deepPurple[100],
+        title: const Text("Agora Video Call"),),
+      drawer: MyDrawer(),
+      body: Stack(
+        children: [
+          Center(
+            child: _renderRemoteVideo(),
+          ),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Container(
+            width: 100,
+            height: 100,
+            child: Center(
+              child: _renderLocalPreview(),
             ),
-            RadioListTile(
-              title: const Text('Broadcaster'),
-              onChanged: (ClientRole? value){
-              setState(() {
-                _role = value;
-              });
-            },
-            value: ClientRole.Broadcaster,
-            groupValue: _role,
-            ),
-            RadioListTile( title: const Text('Audience'),
-              onChanged: (ClientRole? value){
-              setState(() {
-                _role = value;
-              });
-              },
-              value: ClientRole.Audience,
-              groupValue: _role,
-            ),
-            ElevatedButton(
-              onPressed: onJoin,
-              style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity,40),
-             ),
-              child: const Text('Join'),
-            ),
-          ],
           ),
         )
+        ],
       ),
     );
+  }
+
+  //current user video
+  Widget _renderLocalPreview(){
+    return RtcLocalView.SurfaceView();
+   
+   
+  }
+
+  // remote user video
+Widget _renderRemoteVideo(){
+   if (_remoteUid != null) {
+    return RtcRemoteView.SurfaceView(uid: _remoteUid!, channelId: 'firstchanel');
+   } else {
+    return Text('Please wait remote user to join',
+    textAlign: TextAlign.center,);
+   }
   }
 }

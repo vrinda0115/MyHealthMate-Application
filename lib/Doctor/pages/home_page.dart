@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uipages/components/drawerdoc.dart';
 
 class HomePageDoctor extends StatefulWidget {
   const HomePageDoctor({super.key});
@@ -25,13 +26,21 @@ class _HomePageDoctorState extends State<HomePageDoctor> {
           //Logged in message
                   Text(
                     user!.email!,
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
                   ),
-        actions: [
-          IconButton(onPressed: signUserOut, icon: const Icon(Icons.logout))
-        ],
         ),
-        //body: ,
+        drawer: const MyDrawerDoc(),
+        body:  SingleChildScrollView(
+          child: SafeArea(
+            child: Column(
+              children: [
+                const SizedBox(height:25 ),
+                Center(child: Image.asset('lib/icons/doctor.png', height: 100,width: 100,)),
+                
+              ],
+            ),
+          ),
+        ),
 
     );
   }

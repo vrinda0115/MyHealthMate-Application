@@ -61,20 +61,59 @@ Future<bool> addReminders({
   }
 }
 
-Future<DocumentSnapshot?> getUser([String? email]) async {
-  DocumentReference userDB = FirebaseFirestore.instance
-      .collection('Users')
-      .doc(email ?? FirebaseAuth.instance.currentUser!.email);
+/* Future<void> getUserInfo() async {
+  try {
+    // Access the Firestore instance
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    
+    // Get a reference to the users collection
+    CollectionReference users = firestore.collection('users');
+    
+    // Query for specific user document
+    DocumentSnapshot userSnapshot = await users.doc('user_id').get();
+    
+    // Check if the user document exists
+    if (userSnapshot.exists) {
+      // Retrieve user data
+      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
 
-  DocumentSnapshot userDoc = await userDB.get();
-  if (userDoc.exists) {
-    return userDoc;
+      if (userData != null) {
+        // Access user fields
+        String userName = userData['name'];
+        String userEmail = userData['email'];
+        
+        // Do something with the user data
+        print('User Name: $userName');
+        print('User Email: $userEmail');
+      } else {
+        print('User data is null');
+      }
+    } else {
+      print('User document does not exist');
+    }
+  } catch (e) {
+    print('Error getting user info: $e');
   }
-}
+} */
+
+
+/* Future<QuerySnapshot<Object?>> getUsers() async {
+  CollectionReference db =
+        FirebaseFirestore.instance.collection('users');
+ final docRef = db.collection("cities").doc("SF");
+docRef.get().then(
+  (DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    // ...
+  },
+  onError: (e) => print("Error getting document: $e"),
+);
+} */
+
 
 Future<List<QueryDocumentSnapshot>> getReminders() async {
   CollectionReference reminderDB =
-      FirebaseFirestore.instance.collection('Reminders');
+      FirebaseFirestore.instance.collection('Reminder');
   var list = await reminderDB
       .where(
         "email",
@@ -85,7 +124,7 @@ Future<List<QueryDocumentSnapshot>> getReminders() async {
 }
 
 Future<List<QueryDocumentSnapshot>> getMyReminders() async {
-  CollectionReference bibliDB = FirebaseFirestore.instance.collection('Reminders');
+  CollectionReference bibliDB = FirebaseFirestore.instance.collection('Reminder');
   var list = await bibliDB
       .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
       .get();
@@ -93,7 +132,7 @@ Future<List<QueryDocumentSnapshot>> getMyReminders() async {
 }
 
 Future<bool> removeReminders(String id) async {
-  CollectionReference bibliDB = FirebaseFirestore.instance.collection('Reminders');
+  CollectionReference bibliDB = FirebaseFirestore.instance.collection('Reminder');
   try {
     var ref = await bibliDB.doc("$id");
     ref.delete();

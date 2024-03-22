@@ -10,41 +10,44 @@ class DoctorCard extends StatelessWidget {
     required this.doctorName,
     required this.doctorTitle,
   });
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25.0, bottom: 25),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
+    return Container(
+      width: 200, // Adjust the width as needed
+      height: 100, // Set a fixed height to control the vertical size
+      margin: EdgeInsets.only(left: 25.0, bottom: 10),
+      child: Card(
+        elevation: 5,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
-          color: Colors.deepPurple[100],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            //Picture of Doctor
+            SizedBox(height: 10),
+            // Picture of Doctor
             ClipRRect(
               borderRadius: BorderRadius.circular(50),
               child: Image.asset(
                 doctorImagePath,
                 height: 100,
+                width: 100
               ),
             ),
-
-            SizedBox(
-              height: 5,
-            ),
-            //doctor name
+            SizedBox(height: 10),
+            // Doctor name
             Text(
               doctorName,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-
-            SizedBox(
-              height: 5,
+            SizedBox(height: 5),
+            // Doctor title
+            Text(
+              doctorTitle,
+              textAlign: TextAlign.center,
             ),
-            //doctor title
-            Text(doctorTitle),
+            //SizedBox(height: 10),
           ],
         ),
       ),

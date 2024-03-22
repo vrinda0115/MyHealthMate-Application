@@ -31,6 +31,12 @@ class AddScreen extends StatelessWidget {
       if (value != null) {
         // Update _timeOfDay with the picked time
         _timeOfDay = value;
+        // Convert selected time to string
+      String pickedTime = value.format(context);
+      
+      // Set the selected time to the notificationController
+      notificationController.text = pickedTime;
+
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -51,7 +57,7 @@ class AddScreen extends StatelessWidget {
       }
     });
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,6 +189,7 @@ class AddScreen extends StatelessWidget {
                     'Pick Time ',
                     style: TextStyle(color: Colors.white, fontSize: 20),
                   ),
+            
                 ),
               ),
 

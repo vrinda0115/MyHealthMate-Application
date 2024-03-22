@@ -46,7 +46,7 @@ class CustomTextField extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(right: 15),
                   child: Image.asset(
-                    "image/$icon.png",
+                    "icons/$icon.png",
                     height: 30,
                   ),
                 ),

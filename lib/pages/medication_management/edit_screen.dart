@@ -73,9 +73,8 @@ class EditScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 15),
                   child: CustomTextField(
-                    icon: "pilula",
                     backgroundColor: Color(0xFFF8F8F6),
-                    title: "Nome do medicamento:",
+                    title: "Name of the medication:",
                     controller: nameController,
                   ),
                 ),
@@ -87,19 +86,17 @@ class EditScreen extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(right: 15),
                           child: CustomTextField(
-                            icon: "comprim",
                             backgroundColor: Color(0xFFF8F8F6),
                             controller: quantityController,
-                            title: "Quantidade:",
+                            title: "Quantity:",
                           ),
                         ),
                       ),
                       Expanded(
                         child: CustomTextField(
-                          icon: "calendario",
                           backgroundColor: Color(0xFFF8F8F6),
                           controller: daysController,
-                          title: "Por quantos dias:",
+                          title: "For how many days:",
                         ),
                       ),
                     ],
@@ -108,10 +105,9 @@ class EditScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
                   child: CustomTextField(
-                    icon: "notificacao",
                     backgroundColor: Color(0xFFF8F8F6),
                     controller: notificationController,
-                    title: "Notificação:",
+                    title: "Notification:",
                   ),
                 ),
                 Spacer(),
@@ -119,13 +115,13 @@ class EditScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 15),
                   child: CustomButton(
                     backgroundColor: Color(0xFFD11B1B),
-                    text: "Excluir",
+                    text: "Delete",
                     onTap: () async {
                       try {
                         await lem.reference.delete();
                         Navigator.of(context).pop();
                       } catch (e) {
-                        Message.showError(context, "Não foi possivel excluir");
+                        Message.showError(context, "Unable to delete");
                       }
                     },
                   ),
@@ -133,7 +129,7 @@ class EditScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 30),
                   child: CustomButton(
-                    text: "Salvar alterações",
+                    text: "Save Changes",
                     onTap: () async {
                       try {
                         await lem.reference.update({
@@ -146,7 +142,7 @@ class EditScreen extends StatelessWidget {
                         Navigator.of(context).pop();
                       } catch (e) {
                         Message.showError(
-                            context, "Não foi possivel salvar as alterações");
+                            context, "Changes could not be saved");
                       }
                     },
                   ),

@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:uipages/pages/home_page1.dart';
-import 'package:uipages/pages/lab_reports.dart';
-import 'package:uipages/pages/manage_medications.dart';
+import 'package:uipages/Doctor/pages/ManageAppointments.dart';
+import 'package:uipages/Doctor/pages/home_page.dart';
+//import 'package:uipages/pages/home_page1.dart';
+//import 'package:uipages/pages/lab_reports.dart';
+//import 'package:uipages/pages/manage_medications.dart';
 import 'package:uipages/pages/profile_page/profile_page.dart';
 
-class MyDrawer extends StatelessWidget {
-  const MyDrawer({super.key});
+class MyDrawerDoc extends StatelessWidget {
+  const MyDrawerDoc({super.key});
 
   //sign user out method
   void signUserOut() {
@@ -43,7 +45,7 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return HomePagee();
+                            return HomePageDoctor();
                           }));
             },
           ),
@@ -71,14 +73,14 @@ class MyDrawer extends StatelessWidget {
         ),
 
 
-        //Manage Medications
+        //Manage Appointments
         const SizedBox(height: 25,),
         Padding(
           padding: const EdgeInsets.only(left: 25.0),
           child: ListTile(
             leading: const Icon(Icons.medication, size:40),
             title: const Text(
-            'M A N A G E \nM E D I C A T I O N S',
+            'M A N A G E \nA P P O I N T M E N T S',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold),
@@ -86,35 +88,34 @@ class MyDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return ManageMedication();
+                            return const ManageAppointements();
                           }));
             },
           ),
         ),
-       /*  //Lab Reports
-        const SizedBox(height: 25,),
-        Padding(
-          padding: const EdgeInsets.only(left: 25.0),
-          child: ListTile(
-            leading: const Icon(Icons.notes, size:40),
-            title: const Text(
-            'Video Calling',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold),
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return LabReport();
-                          }));
-            },
-          ),
-        ), */
+        // //Lab Reports
+        // const SizedBox(height: 25,),
+        // Padding(
+        //   padding: const EdgeInsets.only(left: 25.0),
+        //   child: ListTile(
+        //     leading: const Icon(Icons.notes, size:40),
+        //     title: const Text(
+        //     '',
+        //     style: TextStyle(
+        //       color: Colors.black,
+        //       fontWeight: FontWeight.bold),
+        //     ),
+        //     onTap: () {
+        //       Navigator.pop(context);
+        //       Navigator.push(context, MaterialPageRoute(builder: (context){
+        //                     return LabReport();
+        //                   }));
+        //     },
+        //   ),
+        // ),
         ],
         ),
-        
-        
+
         //Log out
         const SizedBox(height: 25,),
         Padding(
