@@ -175,6 +175,7 @@ void navigateToAddScreen(BuildContext context) {
                       }),
                 ),
                 Spacer(),
+                
                 MyButton(onTap: () {
                   navigateToAddScreen(context);}, text: 'Add')
               ],

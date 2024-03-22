@@ -8,7 +8,9 @@ class ManageMedication extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Manage Medication"),),
+      appBar: AppBar(
+        backgroundColor:Colors.deepPurple[100],
+        title: const Text("Manage Medication"),),
       drawer: MyDrawer(),
       body: Container(
         child: const HomeScreen(),
