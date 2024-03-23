@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:uipages/components/custom_button.dart';
 import 'package:uipages/components/time_picker.dart';
+import 'package:uipages/pages/medication_management/messages.dart';
 
 class EditAppointmentPage extends StatefulWidget {
+  final DocumentReference appointmentRef;
   final Map<String, dynamic> appointmentData;
 
-  const EditAppointmentPage({Key? key, required this.appointmentData})
-      : super(key: key);
+  const EditAppointmentPage({
+    Key? key,
+    required this.appointmentRef,
+    required this.appointmentData,
+  }) : super(key: key);
 
   @override
   _EditAppointmentPageState createState() => _EditAppointmentPageState();
@@ -18,52 +23,16 @@ class _EditAppointmentPageState extends State<EditAppointmentPage> {
   late DateTime _selectedDate;
   late TimeOfDay _selectedTime;
 
-  //create timeoftheday variable
-  TimeOfDay _timeOfDay = const TimeOfDay(hour: 8, minute: 30);
-
-  //callback for handling time picking
-  void _handleTimePicked(BuildContext context) {
-    showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    ).then((value) {
-      if (value != null) {
-        // Update _timeOfDay with the picked time
-        _timeOfDay = value;
-        // Convert selected time to string
-        String pickedTime = value.format(context);
-
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Picked Time'),
-              content: Text('You picked: ${value.format(context)}'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('OK'),
-                ),
-              ],
-            );
-          },
-        );
-      }
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     _selectedDate = DateTime.parse(
-        widget.appointmentData['date'] ?? DateTime.now().toIso8601String());
-
-    // Use the integer values directly without parsing
+      widget.appointmentData['date'] ?? DateTime.now().toIso8601String(),
+    );
     _selectedTime = TimeOfDay(
-        hour: widget.appointmentData['hour'] as int,
-        minute: widget.appointmentData['minute'] as int);
+      hour: widget.appointmentData['hour'] as int,
+      minute: widget.appointmentData['minute'] as int,
+    );
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -94,24 +63,30 @@ class _EditAppointmentPageState extends State<EditAppointmentPage> {
     }
   }
 
+  Future<void> _deleteAppointment() async {
+    try {
+      await widget.appointmentRef.delete();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Appointment deleted successfully')),
+      );
+      Navigator.of(context).pop();
+    } catch (e) {
+      Message.showError(context, "Unable to delete appointment");
+    }
+  }
+
   Future<void> _saveChanges() async {
     try {
-      final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-      final String appointmentId = widget.appointmentData[
-          'id']; // Assuming 'id' field exists in appointmentData
-      await _firestore.collection('Appointments').doc(appointmentId).update({
+      await widget.appointmentRef.update({
         'date': _selectedDate.toIso8601String(),
         'hour': _selectedTime.hour,
         'minute': _selectedTime.minute,
       });
-      // Show success message or navigate back to previous page
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Appointment updated successfully')),
       );
-      // Navigate back to previous page
       Navigator.of(context).pop();
     } catch (error) {
-      // Show error message if update fails
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update appointment')),
       );
@@ -149,7 +124,7 @@ class _EditAppointmentPageState extends State<EditAppointmentPage> {
             Padding(
               padding: const EdgeInsets.only(left: 12),
               child: MaterialButton(
-                onPressed: () => _handleTimePicked(context),
+                onPressed: () => _selectTime(context),
                 color: Colors.deepPurple[300],
                 child: const Text(
                   'Pick Time ',
@@ -161,6 +136,15 @@ class _EditAppointmentPageState extends State<EditAppointmentPage> {
             CustomButton(
               text: 'Save Changes',
               onTap: _saveChanges,
+            ),
+            SizedBox(height: 25),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: CustomButton(
+                backgroundColor: Color(0xFFD11B1B),
+                text: "Delete",
+                onTap: _deleteAppointment,
+              ),
             ),
           ],
         ),

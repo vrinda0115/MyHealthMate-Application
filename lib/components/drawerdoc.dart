@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uipages/Doctor/pages/ManageAppointments.dart';
 import 'package:uipages/Doctor/pages/home_page.dart';
+import 'package:uipages/Doctor/pages/profilepage/profile_page_doc.dart';
 //import 'package:uipages/pages/home_page1.dart';
 //import 'package:uipages/pages/lab_reports.dart';
 //import 'package:uipages/pages/manage_medications.dart';
@@ -66,7 +67,7 @@ class MyDrawerDoc extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               Navigator.push(context, MaterialPageRoute(builder: (context){
-                            return ProfilePage();
+                            return DoctorProfilePage();
                           }));
             },
           ),

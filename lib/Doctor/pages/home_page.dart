@@ -20,29 +20,28 @@ class _HomePageDoctorState extends State<HomePageDoctor> {
   }
 
   Future<void> fetchUserInfo() async {
-    try {
-      final currentUser = FirebaseAuth.instance.currentUser;
-      if (currentUser != null) {
-        final usersCollection =
-            FirebaseFirestore.instance.collection('doctors');
-        final querySnapshot = await usersCollection
-            .where('email', isEqualTo: currentUser.email)
-            .get();
-        if (querySnapshot.docs.isNotEmpty) {
-          final userDataMap = querySnapshot.docs.first.data();
-          setState(() {
-            userData = {
-              'firstName': userDataMap['first name'] ?? '',
-              'lastName': userDataMap['last name'] ?? '',
-            };
-          });
-        }
+  try {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null && mounted) {
+      final usersCollection =
+          FirebaseFirestore.instance.collection('doctors');
+      final querySnapshot = await usersCollection
+          .where('email', isEqualTo: currentUser.email)
+          .get();
+      if (querySnapshot.docs.isNotEmpty && mounted) {
+        final userDataMap = querySnapshot.docs.first.data();
+        setState(() {
+          userData = {
+            'firstName': userDataMap['first name'] ?? '',
+            'lastName': userDataMap['last name'] ?? '',
+          };
+        });
       }
-    } catch (e) {
-      print('Error fetching user info: $e');
     }
+  } catch (e) {
+    print('Error fetching user info: $e');
   }
-
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(

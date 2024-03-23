@@ -91,14 +91,14 @@ class MyDrawer extends StatelessWidget {
             },
           ),
         ),
-       /*  //Lab Reports
+         //Lab Reports
         const SizedBox(height: 25,),
         Padding(
           padding: const EdgeInsets.only(left: 25.0),
           child: ListTile(
             leading: const Icon(Icons.notes, size:40),
             title: const Text(
-            'Video Calling',
+            'B O O K  \nA P P O I N T M E N T S',
             style: TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.bold),
@@ -110,7 +110,7 @@ class MyDrawer extends StatelessWidget {
                           }));
             },
           ),
-        ), */
+        ), 
         ],
         ),
         

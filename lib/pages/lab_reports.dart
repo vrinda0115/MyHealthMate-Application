@@ -9,17 +9,7 @@ class LabReport extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Video Call"),),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => IndexPage()),
-            );
-          },
-          child: Text('Video Calling'),
-        ),
-      ),
+      
 
 
     );
