@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class DoctorProfilePage extends StatefulWidget {
@@ -13,6 +14,7 @@ class DoctorProfilePage extends StatefulWidget {
 class _DoctorProfilePageState extends State<DoctorProfilePage> {
   late Stream<DocumentSnapshot> _doctorStream;
   late CollectionReference _appointmentsCollection;
+  late String _currentUserEmail;
 
   @override
   void initState() {
@@ -25,6 +27,9 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
 
     // Reference to the appointments collection
     _appointmentsCollection = FirebaseFirestore.instance.collection('Appointments');
+
+    // Get the current user's email
+    _currentUserEmail = FirebaseAuth.instance.currentUser!.email!;
   }
 
   @override
@@ -104,9 +109,14 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
                             final appointmentDescription = data['description'];
                             final email = data['email'];
 
-                            return ListTile(
-                              title: Text('Date: ${_formatDateTime(appointmentDateTime)}'),
-                              subtitle: Text('Description: $appointmentDescription\nEmail: $email'),
+                            return Card(
+                              elevation: 3,
+                              margin: EdgeInsets.symmetric(vertical: 8),
+                              child: ListTile(
+                                title: Text('Date: ${_formatDateTime(appointmentDateTime)}'),
+                                subtitle: Text('Description: $appointmentDescription\nEmail: $email'),
+                                onTap: () => _showBookAppointmentDialog(context, appointment.id),
+                              ),
                             );
                           }).toList(),
                         );
@@ -131,5 +141,53 @@ class _DoctorProfilePageState extends State<DoctorProfilePage> {
     final minute = dateTime.minute.toString().padLeft(2, '0');
     final amPm = dateTime.hour < 12 ? 'AM' : 'PM';
     return '$hour:$minute $amPm';
+  }
+
+  void _showBookAppointmentDialog(BuildContext context, String appointmentId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Book Appointment'),
+        content: Text('Are you sure you want to book this appointment?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('No'),
+          ),
+          TextButton(
+            onPressed: () {
+              _bookAppointment(appointmentId);
+              Navigator.of(context).pop();
+            },
+            child: Text('Yes'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _bookAppointment(String appointmentId) async {
+    try {
+      final appointmentRef = _appointmentsCollection.doc(appointmentId);
+      await appointmentRef.update({
+        'booked_by': _currentUserEmail,
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Appointment booked successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (error) {
+      print('Error booking appointment: $error');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error booking appointment. Please try again later.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 }
