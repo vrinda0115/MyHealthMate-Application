@@ -1,12 +1,11 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:uipages/pages/medication_management/messages.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-// ignore: unused_import
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 void saveUser({
   required String name,
@@ -41,6 +40,13 @@ Future<bool> addReminders({
   required String notification,
 }) async {
   try {
+    // Check if the current user is authenticated
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) {
+      print('Error: Current user is null');
+      return false;
+    }
+
     CollectionReference reminderDB =
         FirebaseFirestore.instance.collection('Reminder');
 
@@ -48,67 +54,67 @@ Future<bool> addReminders({
       {
         "name": name,
         "notification": notification,
-        "email": FirebaseAuth.instance.currentUser!.email,
+        "email": currentUser.email,
         "quantity": quantity,
         "days": days,
       },
     );
 
+    // Schedule notification for the added reminder
+    await scheduleNotification(name, notification, int.parse(days));
+
     return true;
-  } catch (e) {
-    Message.showError(context, 'Error');
+  } catch (e, stackTrace) {
+    print('Error adding reminder: $e');
+    print('StackTrace: $stackTrace');
+    // Handle error by displaying a message to the user
+    // You may need to import the correct Message module or handle the error differently here
     return false;
   }
 }
 
-/* Future<void> getUserInfo() async {
-  try {
-    // Access the Firestore instance
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    
-    // Get a reference to the users collection
-    CollectionReference users = firestore.collection('users');
-    
-    // Query for specific user document
-    DocumentSnapshot userSnapshot = await users.doc('user_id').get();
-    
-    // Check if the user document exists
-    if (userSnapshot.exists) {
-      // Retrieve user data
-      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+Future<void> scheduleNotification(
+    String name, String notificationTime, int days) async {
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  const AndroidNotificationDetails androidPlatformChannelSpecifics =
+     AndroidNotificationDetails(
+       'reminder_channel_id', // Change to your channel ID
+       'Reminders', // Change to your channel name
+       channelDescription: 'Time to take your medicines', // Change to your channel description
+       importance: Importance.high,
+       priority: Priority.high,
+     );
 
-      if (userData != null) {
-        // Access user fields
-        String userName = userData['name'];
-        String userEmail = userData['email'];
-        
-        // Do something with the user data
-        print('User Name: $userName');
-        print('User Email: $userEmail');
-      } else {
-        print('User data is null');
-      }
-    } else {
-      print('User document does not exist');
-    }
-  } catch (e) {
-    print('Error getting user info: $e');
-  }
-} */
+  const NotificationDetails platformChannelSpecifics =
+      NotificationDetails(android: androidPlatformChannelSpecifics);
 
+  final now = DateTime.now();
+  final notificationHour =
+      int.tryParse(notificationTime.split(':')[0]) ?? 0;
+  final notificationMinute =
+      int.tryParse(notificationTime.split(':')[1]) ?? 0;
 
-/* Future<QuerySnapshot<Object?>> getUsers() async {
-  CollectionReference db =
-        FirebaseFirestore.instance.collection('users');
- final docRef = db.collection("cities").doc("SF");
-docRef.get().then(
-  (DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    // ...
-  },
-  onError: (e) => print("Error getting document: $e"),
-);
-} */
+  // Construct the notification time
+  final notificationDateTime = tz.TZDateTime(
+    tz.local,
+    now.year, 
+    now.month, 
+    now.day + days,
+    notificationHour,
+    notificationMinute,
+  );
+
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    0, // Change to a unique ID for each notification
+    'Reminder', // Notification title
+    'Time for $name', // Notification body
+    notificationDateTime, // Scheduled date and time
+    platformChannelSpecifics,
+    uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+    androidAllowWhileIdle: true, // Allow notifications while the device is idle
+  );
+}
 
 
 Future<List<QueryDocumentSnapshot>> getReminders() async {
@@ -124,7 +130,8 @@ Future<List<QueryDocumentSnapshot>> getReminders() async {
 }
 
 Future<List<QueryDocumentSnapshot>> getMyReminders() async {
-  CollectionReference bibliDB = FirebaseFirestore.instance.collection('Reminder');
+  CollectionReference bibliDB =
+      FirebaseFirestore.instance.collection('Reminder');
   var list = await bibliDB
       .where("email", isEqualTo: FirebaseAuth.instance.currentUser!.email)
       .get();
@@ -132,7 +139,8 @@ Future<List<QueryDocumentSnapshot>> getMyReminders() async {
 }
 
 Future<bool> removeReminders(String id) async {
-  CollectionReference bibliDB = FirebaseFirestore.instance.collection('Reminder');
+  CollectionReference bibliDB =
+      FirebaseFirestore.instance.collection('Reminder');
   try {
     var ref = await bibliDB.doc("$id");
     ref.delete();

@@ -1,37 +1,32 @@
 import 'package:flutter/material.dart';
-//import 'package:uipages/pages/auth_page.dart';
-import 'package:uipages/pages/doctor_user.dart';
-import 'package:uipages/pages/firebase_api.dart';
-// ignore: unused_import
-import 'pages/Auth/loginpage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:uipages/firebase_options.dart'; // Import your Firebase options if necessary
+import 'package:uipages/pages/doctor_user.dart';
 
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-Future base( ) async {
-  WidgetsFlutterBinding.ensureInitialized();
-}
-
-
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  FirebaseOptions firebaseOptions = const FirebaseOptions(
-    apiKey: 'AIzaSyDLvw2H3qZsXt0p-2AjLBJwjfuw7f5zCW0',
-    appId: '1:602192321200:android:d27bc5b32a073836337975',
-    messagingSenderId: '602192321200',
-    projectId: 'authfirebase-3a86d',
-    storageBucket: 'authfirebase-3a86d.appspot.com',
+  
+  // Initialize Flutter Local Notifications
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  final InitializationSettings initializationSettings = InitializationSettings(
+    android: initializationSettingsAndroid,
   );
-  await Firebase.initializeApp(options: firebaseOptions);
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+  );
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

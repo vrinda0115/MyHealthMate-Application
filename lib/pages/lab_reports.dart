@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uipages/pages/booked_appointment_page.dart';
@@ -6,41 +7,63 @@ class LabReport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         title: Text("Booked Appointments"),
+        backgroundColor: Colors.deepPurple[100],
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: fetchBookedAppointments(),
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: FirebaseFirestore.instance
+            .collection('Appointments')
+            .where('booked_by', isEqualTo: FirebaseAuth.instance.currentUser!.email)
+            .orderBy('year', descending: true)
+            .orderBy('month', descending: true)
+            .orderBy('day', descending: true)
+            .orderBy('hour', descending: true)
+            .orderBy('minute', descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else {
-            List<Map<String, dynamic>> appointments = snapshot.data ?? [];
+            List<Map<String, dynamic>> appointments = snapshot.data!.docs.map((doc) => doc.data()).toList();
             return appointments.isEmpty
                 ? Center(child: Text("No appointments found"))
                 : ListView.builder(
                     itemCount: appointments.length,
                     itemBuilder: (context, index) {
                       Map<String, dynamic> appointment = appointments[index];
-                      DateTime dateTime = appointment['dateTime'].toDate();
-                      String title = appointment['title'];
+                      int year = appointment['year'];
+                      int month = appointment['month'];
+                      int day = appointment['day'];
+                      int hour = appointment['hour'];
+                      int minute = appointment['minute'];
+                      String title = appointment['email'];
 
-                      return ListTile(
-                        title: Text(title),
-                        subtitle: Text(dateTime.toString()),
-                        onTap: () {
-                          // Navigate to appointment details page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BookedAppointmentPage(
-                                appointment: appointment,
+                      // Construct DateTime object
+                      DateTime dateTime =
+                          DateTime(year, month, day, hour, minute);
+
+                      return Card(
+                        color: Colors.deepPurple[200],
+                        child: ListTile(
+                          title: Text(title),
+                          subtitle: Text(
+                              "Appointment Date: ${_formatDateTime(dateTime)}"),
+                          onTap: () {
+                            // Navigate to appointment details page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BookedAppointmentPage(
+                                  appointment: appointment,
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       );
                     },
                   );
@@ -50,19 +73,11 @@ class LabReport extends StatelessWidget {
     );
   }
 
-  Future<List<Map<String, dynamic>>> fetchBookedAppointments() async {
-    try {
-      QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance
-              .collection('Appointments')
-              .orderBy('dateTime', descending: true)
-              .get();
-
-      List<Map<String, dynamic>> appointments =
-          querySnapshot.docs.map((doc) => doc.data()).toList();
-      return appointments;
-    } catch (e) {
-      throw Exception('Failed to fetch appointments: $e');
-    }
+  String _formatDateTime(DateTime dateTime) {
+    String amPm = dateTime.hour >= 12 ? 'PM' : 'AM';
+    int hour = dateTime.hour > 12 ? dateTime.hour - 12 : dateTime.hour;
+    String formattedMinute =
+        dateTime.minute < 10 ? '0${dateTime.minute}' : '${dateTime.minute}';
+    return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${hour}:${formattedMinute} $amPm';
   }
 }

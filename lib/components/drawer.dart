@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uipages/pages/doctor_user.dart';
 import 'package:uipages/pages/home_page1.dart';
 import 'package:uipages/pages/lab_reports.dart';
 import 'package:uipages/pages/manage_medications.dart';
@@ -8,9 +9,19 @@ import 'package:uipages/pages/profile_page/profile_page.dart';
 class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
-  //sign user out method
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
+ // Sign user out method
+  void signUserOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      // Navigate to the doctor or user page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => DoctorOrUser()),
+      );
+    } catch (e) {
+      print('Error signing out: $e');
+      // Handle sign out errors if needed
+    }
   }
 
 
@@ -131,7 +142,7 @@ class MyDrawer extends StatelessWidget {
               Navigator.pop(context);
 
               //logout
-              signUserOut();
+              signUserOut(context);
             },
           ),
         ),

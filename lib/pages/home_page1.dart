@@ -82,7 +82,7 @@ class _HomePageeState extends State<HomePagee> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DetailsPage(name: details),
+        builder: (context) => DoctorListPage(),
       ),
     );
   }
